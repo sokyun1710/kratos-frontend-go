@@ -7,7 +7,7 @@ import (
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gorilla/mux"
 	"github.com/ory/kratos-client-go/client"
-	"github.com/ory/kratos-client-go/client/common"
+	"github.com/ory/kratos-client-go/client/public"
 	"github.com/ory/kratos-client-go/models"
 	"github.com/sawadashota/kratos-frontend-go/middleware"
 	"github.com/sawadashota/kratos-frontend-go/x"
@@ -94,9 +94,9 @@ func (h *Handler) RenderHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) RenderSettingForms(w http.ResponseWriter, r *http.Request) {
-	requestCode := r.URL.Query().Get("request")
-	params := common.NewGetSelfServiceBrowserSettingsRequestParams().WithRequest(requestCode)
-	res, err := h.r.KratosClient().Common.GetSelfServiceBrowserSettingsRequest(params)
+	requestCode := r.URL.Query().Get("flow")
+	params := public.NewGetSelfServiceSettingsFlowParams().WithID(requestCode)
+	res, err := h.r.KratosClient().Public.GetSelfServiceSettingsFlow(params,nil)
 	if err != nil {
 		h.r.Logger().Errorf("fail to get login request from kratos: %s", err)
 		http.Redirect(w, r, h.c.KratosSettingsURL(), http.StatusFound)
@@ -112,16 +112,14 @@ func (h *Handler) RenderSettingForms(w http.ResponseWriter, r *http.Request) {
 
 	htmlValues := struct {
 		LogoutURL        string
-		Password         models.SettingsRequestMethod
-		Profile          models.SettingsRequestMethod
-		OIDC             models.SettingsRequestMethod
-		UpdateSuccessful bool
+		Password         models.SettingsFlowMethod
+		Profile          models.SettingsFlowMethod
+		OIDC             models.SettingsFlowMethod
 	}{
 		LogoutURL:        h.c.KratosLogoutURL(),
 		Password:         res.GetPayload().Methods["password"],
 		Profile:          res.GetPayload().Methods["profile"],
 		OIDC:             res.GetPayload().Methods["oidc"],
-		UpdateSuccessful: *res.GetPayload().UpdateSuccessful,
 	}
 	if err := settingsHTML.Render(w, &htmlValues); err != nil {
 		h.r.Logger().Errorf("fail to render HTML: %s", err)

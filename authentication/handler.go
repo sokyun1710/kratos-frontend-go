@@ -14,7 +14,7 @@ import (
 	"github.com/ory/kratos-client-go/models"
 
 	"github.com/gobuffalo/packr/v2"
-	"github.com/ory/kratos-client-go/client/common"
+	"github.com/ory/kratos-client-go/client/public"
 )
 
 var (
@@ -64,9 +64,9 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 }
 
 func (h *Handler) RenderSignInForm(w http.ResponseWriter, r *http.Request) {
-	requestCode := r.URL.Query().Get("request")
-	params := common.NewGetSelfServiceBrowserLoginRequestParams().WithRequest(requestCode)
-	res, err := h.r.KratosClient().Common.GetSelfServiceBrowserLoginRequest(params)
+	requestCode := r.URL.Query().Get("flow")
+	params := public.NewGetSelfServiceLoginFlowParams().WithID(requestCode)
+	res, err := h.r.KratosClient().Public.GetSelfServiceLoginFlow(params)
 	if err != nil {
 		h.r.Logger().Errorf("fail to get login request from kratos: %s", err)
 		http.Redirect(w, r, h.c.KratosLoginURL(), http.StatusFound)
@@ -80,7 +80,7 @@ func (h *Handler) RenderSignInForm(w http.ResponseWriter, r *http.Request) {
 	form := res.GetPayload().Methods["password"].Config
 
 	htmlValues := struct {
-		Form *models.LoginRequestMethodConfig
+		Form *models.LoginFlowMethodConfig
 	}{
 		Form: form,
 	}
@@ -92,9 +92,9 @@ func (h *Handler) RenderSignInForm(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) RenderSignUpForm(w http.ResponseWriter, r *http.Request) {
-	requestCode := r.URL.Query().Get("request")
-	params := common.NewGetSelfServiceBrowserRegistrationRequestParams().WithRequest(requestCode)
-	res, err := h.r.KratosClient().Common.GetSelfServiceBrowserRegistrationRequest(params)
+	requestCode := r.URL.Query().Get("flow")
+	params := public.NewGetSelfServiceRegistrationFlowParams().WithID(requestCode)
+	res, err := h.r.KratosClient().Public.GetSelfServiceRegistrationFlow(params)
 	if err != nil {
 		h.r.Logger().Errorf("fail to get registration request from kratos: %s", err)
 		http.Redirect(w, r, h.c.KratosRegistrationURL(), http.StatusFound)
@@ -108,7 +108,7 @@ func (h *Handler) RenderSignUpForm(w http.ResponseWriter, r *http.Request) {
 	form := res.GetPayload().Methods["password"].Config
 
 	htmlValues := struct {
-		Form *models.RegistrationRequestMethodConfig
+		Form *models.RegistrationFlowMethodConfig
 	}{
 		Form: form,
 	}
