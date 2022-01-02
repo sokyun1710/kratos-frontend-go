@@ -60,7 +60,7 @@ type Claims struct {
 }
 
 type Session struct {
-	Sid             string    `json:"sid" mapstructure:"sid"`
+	Id              string    `json:"id" mapstructure:"id"`
 	AuthenticatedAt time.Time `json:"authenticated_at" mapstructure:"authenticated_at"`
 	ExpiresAt       time.Time `json:"expires_at" mapstructure:"expires_at"`
 	IssuedAt        time.Time `json:"issued_at" mapstructure:"issued_at"`

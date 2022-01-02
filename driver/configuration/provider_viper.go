@@ -19,7 +19,7 @@ const (
 	viperKratosAdminURL    = "kratos.admin_url"
 	viperKratosBrowserURL  = "kratos.browser_url"
 	viperJWKsURL           = "jwks_url"
-	viperOPAPolicyURL           = "opa.policy_url"
+	viperOPAPolicyURL      = "opa.policy_url"
 )
 
 func init() {
@@ -73,22 +73,22 @@ func (v *ViperProvider) KratosBrowserURL() string {
 
 // KratosLogoutURL .
 func (v *ViperProvider) KratosLogoutURL() string {
-	return v.KratosBrowserURL() + "/self-service/browser/flows/logout"
+	return v.KratosBrowserURL() + "/self-service/logout/browser"
 }
 
 // KratosLoginURL .
 func (v *ViperProvider) KratosLoginURL() string {
-	return v.KratosBrowserURL() + "/self-service/browser/flows/login"
+	return v.KratosBrowserURL() + "/self-service/login/browser"
 }
 
 // KratosRegistrationURL .
 func (v *ViperProvider) KratosRegistrationURL() string {
-	return v.KratosBrowserURL() + "/self-service/browser/flows/registration"
+	return v.KratosBrowserURL() + "/self-service/registration/browser"
 }
 
 // KratosSettingsURL .
 func (v *ViperProvider) KratosSettingsURL() string {
-	return v.KratosBrowserURL() + "/self-service/browser/flows/settings"
+	return v.KratosBrowserURL() + "/self-service/settings/browser"
 }
 
 // JWKsURL .
