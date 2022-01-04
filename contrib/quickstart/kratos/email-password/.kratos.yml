@@ -2,7 +2,7 @@ dsn: memory
 
 serve:
   public:
-    base_url: http://kratos:4433
+    base_url: http://127.0.0.1:4455/.ory/kratos/public/
   admin:
     base_url: http://kratos:4434/
 
