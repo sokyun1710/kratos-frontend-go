@@ -96,7 +96,7 @@ func (h *Handler) RenderHome(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) RenderSettingForms(w http.ResponseWriter, r *http.Request) {
 	requestCode := r.URL.Query().Get("flow")
 	params := public.NewGetSelfServiceSettingsFlowParams().WithID(requestCode)
-	res, err := h.r.KratosClient().Public.GetSelfServiceSettingsFlow(params,nil)
+	res, err := h.r.KratosClient().Public.GetSelfServiceSettingsFlow(params, nil)
 	if err != nil {
 		h.r.Logger().Errorf("fail to get login request from kratos: %s", err)
 		http.Redirect(w, r, h.c.KratosSettingsURL(), http.StatusFound)
@@ -111,15 +111,15 @@ func (h *Handler) RenderSettingForms(w http.ResponseWriter, r *http.Request) {
 	h.r.Logger().Debugf("payload: %v", res.GetPayload())
 
 	htmlValues := struct {
-		LogoutURL        string
-		Password         models.SettingsFlowMethod
-		Profile          models.SettingsFlowMethod
-		OIDC             models.SettingsFlowMethod
+		LogoutURL string
+		Password  models.SettingsFlowMethod
+		Profile   models.SettingsFlowMethod
+		OIDC      models.SettingsFlowMethod
 	}{
-		LogoutURL:        h.c.KratosLogoutURL(),
-		Password:         res.GetPayload().Methods["password"],
-		Profile:          res.GetPayload().Methods["profile"],
-		OIDC:             res.GetPayload().Methods["oidc"],
+		LogoutURL: h.c.KratosLogoutURL(),
+		Password:  res.GetPayload().Methods["password"],
+		Profile:   res.GetPayload().Methods["profile"],
+		OIDC:      res.GetPayload().Methods["oidc"],
 	}
 	if err := settingsHTML.Render(w, &htmlValues); err != nil {
 		h.r.Logger().Errorf("fail to render HTML: %s", err)
