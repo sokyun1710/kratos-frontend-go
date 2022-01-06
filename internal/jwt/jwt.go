@@ -68,10 +68,8 @@ type Session struct {
 }
 
 type Identity struct {
-	ID              string    `json:"id" mapstructure:"id"`
-	Addresses       []Address `json:"addresses" mapstructure:"addresses"`
-	TraitsSchemaID  string    `json:"traits_schema_id" mapstructure:"traits_schema_id"`
-	TraitsSchemaURL string    `json:"traits_schema_url" mapstructure:"traits_schema_url"`
+	ID        string `json:"id" mapstructure:"id"`
+	Traits    Traits
 }
 
 type Traits struct {
