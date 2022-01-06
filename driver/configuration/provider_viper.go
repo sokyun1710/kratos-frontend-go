@@ -73,7 +73,7 @@ func (v *ViperProvider) KratosBrowserURL() string {
 
 // KratosLogoutURL .
 func (v *ViperProvider) KratosLogoutURL() string {
-	return v.KratosBrowserURL() + "/self-service/logout/browser"
+	return v.KratosBrowserURL() + "/self-service/browser/flows/logout"
 }
 
 // KratosLoginURL .

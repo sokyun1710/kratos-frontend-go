@@ -11,9 +11,6 @@
                 <input class="input" name="{{.Name}}" {{if .Pattern}} pattern="{{.Pattern}}" {{end}}
                     required="{{.Required}}" type="{{.Type}}" value="{{.Value}}" {{if .Disabled}} disabled {{end}}>
             </div>
-            {{ range .Errors }}
-            <p class="help is-danger">{{ .Message }}</p>
-            {{ end }}
         </div>
         {{ end }}
         <div class="field is-grouped">
