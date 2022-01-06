@@ -64,9 +64,9 @@ services:
         target: /var/lib/sqlite
         read_only: false
       - type: bind
-        source: ./contrib/quickstart/kratos/email-password
+        source: ./contrib/quickstart/kratos/
         target: /etc/config/kratos
-    command: -c /etc/config/kratos/.kratos.yml migrate sql -e --yes
+    command: -c /etc/config/kratos/email-password/.kratos.yml migrate sql -e --yes
     restart: on-failure
     networks:
       - intranet
@@ -81,14 +81,14 @@ services:
     restart: unless-stopped
     environment:
       - DSN=sqlite:///var/lib/sqlite/db.sqlite?_fk=true
-    command: serve -c /etc/config/kratos/.kratos.yml --dev
+    command: serve -c /etc/config/kratos/email-password/.kratos.yml --dev
     volumes:
       - type: volume
         source: kratos-sqlite
         target: /var/lib/sqlite
         read_only: false
       - type: bind
-        source: ./contrib/quickstart/kratos/email-password
+        source: ./contrib/quickstart/kratos/
         target: /etc/config/kratos
     networks:
       - intranet
@@ -104,5 +104,6 @@ services:
 networks:
   intranet:
 
+    null
 volumes:
-  kratos-sqlite:
+  kratos-sqlite: null
