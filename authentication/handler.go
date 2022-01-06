@@ -78,11 +78,14 @@ func (h *Handler) RenderSignInForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	form := res.GetPayload().Methods["password"].Config
+	sso := res.GetPayload().Methods["oidc"].Config
 
 	htmlValues := struct {
 		Form *models.LoginFlowMethodConfig
+		OIDC *models.LoginFlowMethodConfig
 	}{
 		Form: form,
+		OIDC: sso,
 	}
 	if err := signInHTML.Render(w, &htmlValues); err != nil {
 		h.r.Logger().Errorf("fail to render HTML: %s", err)
@@ -106,7 +109,6 @@ func (h *Handler) RenderSignUpForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	form := res.GetPayload().Methods["password"].Config
-
 	htmlValues := struct {
 		Form *models.RegistrationFlowMethodConfig
 	}{

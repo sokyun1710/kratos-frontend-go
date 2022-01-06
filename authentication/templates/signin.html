@@ -19,6 +19,17 @@
             </div>
         </div>
     </form>
+    <form action="{{ .OIDC.Action }}" method="post" id="github-sso">
+        {{ range $e,$v := .OIDC.Fields }}
+        <input class="button is-link is-fullheight" name="{{.Name}}" {{if .Pattern}} pattern="{{.Pattern}}" {{end}}
+            required="{{.Required}}" type="hidden" value="{{.Value}}" {{if .Disabled}} disabled {{end}}>
+        {{ end }}
+        <div class="field">
+            <div class="control">
+                <button class="button is-link" form="github-sso" value="Submit">Continue With GitHub</button>
+            </div>
+        </div>
+    </form>
 </div>
 <div class="container links">
     <a href='/auth/signup'>
