@@ -34,8 +34,6 @@ services:
       - "--log-format=json-pretty"
       - "--set=decision_logs.console=true"
       - "--log-level=debug"
-      - "/policies"
-
   oathkeeper:
     image: oryd/oathkeeper:v0.38.1
     depends_on:
