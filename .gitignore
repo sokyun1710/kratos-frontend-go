@@ -2,3 +2,4 @@
 /app
 *-packr.go
 contrib/quickstart/kratos/email-password/.kratos.yml
+dockerfile

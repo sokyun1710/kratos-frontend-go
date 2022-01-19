@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/go-openapi/runtime v0.19.27
 	github.com/gobuffalo/packr/v2 v2.8.0
 	github.com/gorilla/mux v1.7.4
 	github.com/mitchellh/mapstructure v1.4.1

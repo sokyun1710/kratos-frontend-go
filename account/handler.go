@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-openapi/runtime"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gorilla/mux"
 	"github.com/ory/kratos-client-go/client"
@@ -96,7 +97,8 @@ func (h *Handler) RenderHome(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) RenderSettingForms(w http.ResponseWriter, r *http.Request) {
 	requestCode := r.URL.Query().Get("flow")
 	params := public.NewGetSelfServiceSettingsFlowParams().WithID(requestCode)
-	res, err := h.r.KratosClient().Public.GetSelfServiceSettingsFlow(params, nil)
+	authInfo := runtime.ClientAuthInfoWriterFunc(params.WriteToRequest)
+	res, err := h.r.KratosClient().Public.GetSelfServiceSettingsFlow(params, authInfo)
 	if err != nil {
 		h.r.Logger().Errorf("fail to get login request from kratos: %s", err)
 		http.Redirect(w, r, h.c.KratosSettingsURL(), http.StatusFound)
