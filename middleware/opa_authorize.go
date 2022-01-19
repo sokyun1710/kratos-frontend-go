@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -75,6 +76,7 @@ func (m *Middleware) Authorize(next http.Handler) http.Handler {
 				} `json:"token"`
 			} `json:"result"`
 		}
+
 		var rb respBody
 		if err := json.NewDecoder(res.Body).Decode(&rb); err != nil {
 			m.r.Logger().Error(err)
@@ -84,6 +86,7 @@ func (m *Middleware) Authorize(next http.Handler) http.Handler {
 
 		if !rb.Result.Allow {
 			m.r.Logger().Error(err)
+			fmt.Println("unauthorized")
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
