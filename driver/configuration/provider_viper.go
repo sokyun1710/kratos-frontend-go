@@ -1,10 +1,9 @@
 package configuration
 
 import (
-	"strings"
-
 	"github.com/sawadashota/kratos-frontend-go/x"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 type ViperProvider struct{}

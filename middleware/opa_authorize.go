@@ -6,10 +6,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/sawadashota/kratos-frontend-go/internal/jwt"
 	"net/http"
 	"strings"
-
-	"github.com/sawadashota/kratos-frontend-go/internal/jwt"
 )
 
 func (m *Middleware) Authorize(next http.Handler) http.Handler {
@@ -40,6 +39,7 @@ func (m *Middleware) Authorize(next http.Handler) http.Handler {
 		}
 
 		b, err := json.Marshal(input)
+
 		if err != nil {
 			m.r.Logger().Error(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -55,6 +55,7 @@ func (m *Middleware) Authorize(next http.Handler) http.Handler {
 
 		cl := http.DefaultClient
 		res, err := cl.Do(req)
+
 		if err != nil {
 			m.r.Logger().Error(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -78,6 +79,7 @@ func (m *Middleware) Authorize(next http.Handler) http.Handler {
 		}
 
 		var rb respBody
+
 		if err := json.NewDecoder(res.Body).Decode(&rb); err != nil {
 			m.r.Logger().Error(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -98,13 +100,13 @@ func (m *Middleware) Authorize(next http.Handler) http.Handler {
 
 		m.r.Logger().Debug(rb)
 		r = SetClaimsToContext(r, &rb.Result.Token.Payload)
-
 		next.ServeHTTP(w, r)
 	})
 }
 
 func extractJWTToken(r *http.Request) (string, error) {
 	s := strings.Split(r.Header.Get("authorization"), " ")
+
 	if len(s) != 2 {
 		return "", errors.New("authorization header is not found")
 	}
@@ -119,6 +121,7 @@ func SetClaimsToContext(r *http.Request, claims *jwt.Claims) *http.Request {
 
 func GetClaimsFromContext(r *http.Request) (*jwt.Claims, error) {
 	claims, ok := r.Context().Value(contextClaimsKey).(*jwt.Claims)
+
 	if !ok {
 		return nil, errors.New("request context doesn't have claims")
 	}

@@ -8,6 +8,7 @@ import (
 func (m *Middleware) ValidateFormRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestCode := r.URL.Query().Get("flow")
+
 		if requestCode == "" {
 			base := filepath.Base(r.URL.Path)
 			switch base {

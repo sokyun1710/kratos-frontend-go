@@ -1,20 +1,15 @@
 package authentication
 
 import (
-	"net/http"
-
-	"github.com/sawadashota/kratos-frontend-go/x"
-
-	"github.com/ory/kratos-client-go/client"
-	"github.com/sawadashota/kratos-frontend-go/middleware"
-	"github.com/sirupsen/logrus"
-
-	"github.com/gorilla/mux"
-
-	"github.com/ory/kratos-client-go/models"
-
 	"github.com/gobuffalo/packr/v2"
+	"github.com/gorilla/mux"
+	"github.com/ory/kratos-client-go/client"
 	"github.com/ory/kratos-client-go/client/public"
+	"github.com/ory/kratos-client-go/models"
+	"github.com/sawadashota/kratos-frontend-go/middleware"
+	"github.com/sawadashota/kratos-frontend-go/x"
+	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 var (
@@ -58,7 +53,6 @@ func New(r Registry, c Configuration) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	sub := router.NewRoute().Subrouter()
 	sub.Use(h.r.Middleware().ValidateFormRequest)
-
 	sub.HandleFunc("/auth/signin", h.RenderSignInForm).Methods(http.MethodGet)
 	sub.HandleFunc("/auth/signup", h.RenderSignUpForm).Methods(http.MethodGet)
 }
@@ -67,16 +61,19 @@ func (h *Handler) RenderSignInForm(w http.ResponseWriter, r *http.Request) {
 	requestCode := r.URL.Query().Get("flow")
 	params := public.NewGetSelfServiceLoginFlowParams().WithID(requestCode)
 	res, err := h.r.KratosClient().Public.GetSelfServiceLoginFlow(params)
+
 	if err != nil {
 		h.r.Logger().Errorf("fail to get login request from kratos: %s", err)
 		http.Redirect(w, r, h.c.KratosLoginURL(), http.StatusFound)
 		return
 	}
+
 	if res.Error() == "" {
 		h.r.Logger().Errorf("fail to get login request from kratos: %s", res.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	form := res.GetPayload().Methods["password"].Config
 	sso := res.GetPayload().Methods["oidc"].Config
 
@@ -87,6 +84,7 @@ func (h *Handler) RenderSignInForm(w http.ResponseWriter, r *http.Request) {
 		Form: form,
 		OIDC: sso,
 	}
+
 	if err := signInHTML.Render(w, &htmlValues); err != nil {
 		h.r.Logger().Errorf("fail to render HTML: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -98,22 +96,26 @@ func (h *Handler) RenderSignUpForm(w http.ResponseWriter, r *http.Request) {
 	requestCode := r.URL.Query().Get("flow")
 	params := public.NewGetSelfServiceRegistrationFlowParams().WithID(requestCode)
 	res, err := h.r.KratosClient().Public.GetSelfServiceRegistrationFlow(params)
+
 	if err != nil {
 		h.r.Logger().Errorf("fail to get registration request from kratos: %s", err)
 		http.Redirect(w, r, h.c.KratosRegistrationURL(), http.StatusFound)
 		return
 	}
+
 	if res.Error() == "" {
 		h.r.Logger().Errorf("fail to get registration request from kratos: %s", res.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	form := res.GetPayload().Methods["password"].Config
 	htmlValues := struct {
 		Form *models.RegistrationFlowMethodConfig
 	}{
 		Form: form,
 	}
+	
 	if err := signUpHTML.Render(w, &htmlValues); err != nil {
 		h.r.Logger().Errorf("fail to render HTML: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)

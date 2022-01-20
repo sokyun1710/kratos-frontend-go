@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ory/kratos-client-go/client"
 	"github.com/sawadashota/kratos-frontend-go/account"
+	"github.com/sawadashota/kratos-frontend-go/admin"
 	"github.com/sawadashota/kratos-frontend-go/authentication"
 	"github.com/sawadashota/kratos-frontend-go/driver/configuration"
 	"github.com/sawadashota/kratos-frontend-go/internal/jwt"
@@ -15,14 +16,13 @@ import (
 // Registry .
 type Registry interface {
 	Logger() logrus.FieldLogger
-
 	JWTParser() *jwt.Parser
 	Middleware() *middleware.Middleware
 	KratosClient() *client.OryKratos
-
 	AccountHandler() *account.Handler
 	AuthenticationHandler() *authentication.Handler
 	SalaryHandler() *salary.Handler
+	IdentitiesHandler() *admin.Handler
 	RegisterRoutes(router *mux.Router)
 }
 

@@ -1,13 +1,12 @@
 package salary
 
 import (
-	"net/http"
-
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gorilla/mux"
 	"github.com/sawadashota/kratos-frontend-go/middleware"
 	"github.com/sawadashota/kratos-frontend-go/x"
 	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 var (
@@ -47,7 +46,6 @@ func New(r Registry, c Configuration) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	sub := router.NewRoute().Subrouter()
 	sub.Use(h.r.Middleware().Authorize)
-
 	sub.HandleFunc("/my/salary", h.RenderSalary).Methods(http.MethodGet)
 }
 

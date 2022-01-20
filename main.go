@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-
 	"github.com/gorilla/mux"
 	"github.com/sawadashota/kratos-frontend-go/driver"
 	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 func main() {

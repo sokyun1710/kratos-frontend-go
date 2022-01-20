@@ -1,10 +1,9 @@
 package x
 
 import (
+	"github.com/gobuffalo/packr/v2"
 	"html/template"
 	"io"
-
-	"github.com/gobuffalo/packr/v2"
 )
 
 type Box struct {

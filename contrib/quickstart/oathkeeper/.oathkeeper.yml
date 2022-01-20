@@ -32,8 +32,7 @@ errors:
       config:
         to: http://127.0.0.1:4455/auth/signin
         when:
-          -
-            error:
+          - error:
               - unauthorized
               - forbidden
             request:

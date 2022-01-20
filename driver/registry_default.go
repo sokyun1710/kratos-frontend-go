@@ -1,18 +1,17 @@
 package driver
 
 import (
-	"net/url"
-
-	"github.com/sawadashota/kratos-frontend-go/salary"
-
 	"github.com/gorilla/mux"
 	"github.com/ory/kratos-client-go/client"
 	"github.com/sawadashota/kratos-frontend-go/account"
+	"github.com/sawadashota/kratos-frontend-go/admin"
 	"github.com/sawadashota/kratos-frontend-go/authentication"
 	"github.com/sawadashota/kratos-frontend-go/driver/configuration"
 	"github.com/sawadashota/kratos-frontend-go/internal/jwt"
 	"github.com/sawadashota/kratos-frontend-go/middleware"
+	"github.com/sawadashota/kratos-frontend-go/salary"
 	"github.com/sirupsen/logrus"
+	"net/url"
 )
 
 var _ Registry = new(RegistryDefault)
@@ -23,14 +22,13 @@ type RegistryDefault struct {
 	c configuration.Provider
 	r Registry
 
-	jwtParser *jwt.Parser
-	mw        *middleware.Middleware
-
-	kratosClient *client.OryKratos
-
+	jwtParser             *jwt.Parser
+	mw                    *middleware.Middleware
+	kratosClient          *client.OryKratos
 	authenticationHandler *authentication.Handler
 	accountHandler        *account.Handler
 	salaryHandler         *salary.Handler
+	identitiesHandler     *admin.Handler
 }
 
 func (r *RegistryDefault) JWTParser() *jwt.Parser {
@@ -53,6 +51,7 @@ func (r *RegistryDefault) AuthenticationHandler() *authentication.Handler {
 	}
 	return r.authenticationHandler
 }
+
 func (r *RegistryDefault) SalaryHandler() *salary.Handler {
 	if r.salaryHandler == nil {
 		r.salaryHandler = salary.New(r, r.c)
@@ -60,10 +59,18 @@ func (r *RegistryDefault) SalaryHandler() *salary.Handler {
 	return r.salaryHandler
 }
 
+func (r *RegistryDefault) IdentitiesHandler() *admin.Handler {
+	if r.identitiesHandler == nil {
+		r.identitiesHandler = admin.New(r, r.c)
+	}
+	return r.identitiesHandler
+}
+
 func (r *RegistryDefault) RegisterRoutes(router *mux.Router) {
 	r.AuthenticationHandler().RegisterRoutes(router)
 	r.AccountHandler().RegisterRoutes(router)
 	r.SalaryHandler().RegisterRoutes(router)
+	r.IdentitiesHandler().RegisterRoutes(router)
 }
 
 func NewRegistryDefault(c configuration.Provider) *RegistryDefault {
@@ -109,6 +116,5 @@ func (r *RegistryDefault) KratosClient() *client.OryKratos {
 		})
 		r.kratosClient = cl
 	}
-
 	return r.kratosClient
 }

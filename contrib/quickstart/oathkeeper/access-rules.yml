@@ -1,5 +1,4 @@
--
-  id: "ory:kratos:public"
+- id: "ory:kratos:public"
   upstream:
     preserve_host: true
     url: "http://kratos:4433"
@@ -13,15 +12,13 @@
       - DELETE
       - PATCH
   authenticators:
-    -
-      handler: noop
+    - handler: noop
   authorizer:
     handler: allow
   mutators:
     - handler: noop
 
--
-  id: "sawadashota:frontend:anonymous"
+- id: "sawadashota:frontend:anonymous"
   upstream:
     preserve_host: true
     url: "http://frontend:4435"
@@ -30,26 +27,22 @@
     methods:
       - GET
   authenticators:
-    -
-      handler: anonymous
+    - handler: anonymous
   authorizer:
     handler: allow
   mutators:
-    -
-      handler: noop
+    - handler: noop
 
--
-  id: "sawadashota:frontend:protected"
+- id: "sawadashota:frontend:protected"
   upstream:
     preserve_host: true
     url: "http://frontend:4435"
   match:
-    url: "http://127.0.0.1:4455/<{,debug,settings,my/salary}>"
+    url: "http://127.0.0.1:4455/<{,debug,settings,my/salary,identities}>"
     methods:
       - GET
   authenticators:
-    -
-      handler: cookie_session
+    - handler: cookie_session
   authorizer:
     handler: allow
   mutators:

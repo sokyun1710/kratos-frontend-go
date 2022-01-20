@@ -3,14 +3,13 @@ package jwt
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"time"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
 	"github.com/square/go-jose/v3"
+	"net/http"
+	"time"
 )
 
 type Parser struct {
@@ -39,6 +38,7 @@ func (p *Parser) ParseTokenClaims(claims interface{}) (*Claims, error) {
 		DecodeHook: mapstructure.StringToTimeHookFunc("2006-01-02T15:04:05.999999999Z"),
 		Result:     &c,
 	})
+
 	if err != nil {
 		return nil, fmt.Errorf("fail to initialize token claim decoder. %s", err)
 	}
@@ -68,8 +68,8 @@ type Session struct {
 }
 
 type Identity struct {
-	ID        string `json:"id" mapstructure:"id"`
-	Traits    Traits
+	ID     string `json:"id" mapstructure:"id"`
+	Traits Traits
 }
 
 type Traits struct {
@@ -121,11 +121,13 @@ func (p *Parser) findJWK(kid string) (*jose.JSONWebKey, error) {
 	}
 
 	var jwks jose.JSONWebKeySet
+
 	if err := json.NewDecoder(res.Body).Decode(&jwks); err != nil {
 		return nil, err
 	}
 
 	jwk := jwks.Key(kid)
+
 	if len(jwk) == 0 {
 		return nil, fmt.Errorf("JWLs does't have the kid: %s", kid)
 	}

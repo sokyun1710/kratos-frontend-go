@@ -2,8 +2,6 @@ package account
 
 import (
 	"encoding/json"
-	"net/http"
-
 	"github.com/go-openapi/runtime"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gorilla/mux"
@@ -13,6 +11,7 @@ import (
 	"github.com/sawadashota/kratos-frontend-go/middleware"
 	"github.com/sawadashota/kratos-frontend-go/x"
 	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 var (
@@ -57,9 +56,7 @@ func New(r Registry, c Configuration) *Handler {
 func (h *Handler) RegisterRoutes(router *mux.Router) {
 	sub := router.NewRoute().Subrouter()
 	sub.Use(h.r.Middleware().Authorize)
-
 	sub.HandleFunc("/", h.RenderHome).Methods(http.MethodGet)
-
 	setting := sub.NewRoute().Subrouter()
 	setting.Use(h.r.Middleware().ValidateFormRequest)
 	sub.HandleFunc("/settings", h.RenderSettingForms).Methods(http.MethodGet)
@@ -67,6 +64,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 
 func (h *Handler) RenderHome(w http.ResponseWriter, r *http.Request) {
 	claims, err := middleware.GetClaimsFromContext(r)
+
 	if err != nil {
 		h.r.Logger().Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -74,6 +72,7 @@ func (h *Handler) RenderHome(w http.ResponseWriter, r *http.Request) {
 	}
 
 	claimsJSON, err := json.MarshalIndent(claims, "", "  ")
+
 	if err != nil {
 		h.r.Logger().Errorf("fail to marshal claims: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -99,11 +98,13 @@ func (h *Handler) RenderSettingForms(w http.ResponseWriter, r *http.Request) {
 	params := public.NewGetSelfServiceSettingsFlowParams().WithID(requestCode)
 	authInfo := runtime.ClientAuthInfoWriterFunc(params.WriteToRequest)
 	res, err := h.r.KratosClient().Public.GetSelfServiceSettingsFlow(params, authInfo)
+
 	if err != nil {
 		h.r.Logger().Errorf("fail to get login request from kratos: %s", err)
 		http.Redirect(w, r, h.c.KratosSettingsURL(), http.StatusFound)
 		return
 	}
+
 	if res.Error() == "" {
 		h.r.Logger().Errorf("fail to get settings request from kratos: %s", res.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -123,6 +124,7 @@ func (h *Handler) RenderSettingForms(w http.ResponseWriter, r *http.Request) {
 		Profile:   res.GetPayload().Methods["profile"],
 		OIDC:      res.GetPayload().Methods["oidc"],
 	}
+
 	if err := settingsHTML.Render(w, &htmlValues); err != nil {
 		h.r.Logger().Errorf("fail to render HTML: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
