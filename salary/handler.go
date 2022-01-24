@@ -54,6 +54,7 @@ func (h *Handler) RenderSalary(w http.ResponseWriter, r *http.Request) {
 		Annual   uint
 		Currency string
 	}
+	
 	htmlValues := struct {
 		LogoutURL string
 		Salary    salary

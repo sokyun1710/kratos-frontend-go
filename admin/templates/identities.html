@@ -2,5 +2,18 @@
 <h1 class="title">
     List Identities
 </h1>
-<pre>{{ .List }}</pre>
+<table>
+    <tr>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+    </tr>
+    {{ range .List }}
+    <tr>
+        <td>{{ .Traits.email }}</td>
+        <td>{{ .Traits.name.first }}</td>
+        <td>{{ .Traits.name.last }}</td>
+    </tr>
+    {{ end }}
+</table>
 {{ end }}

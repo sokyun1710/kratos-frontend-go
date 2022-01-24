@@ -14,8 +14,8 @@ import (
 func (m *Middleware) Authorize(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
-
 		token, err := extractJWTToken(r)
+
 		if err != nil {
 			m.r.Logger().Info(err)
 			w.WriteHeader(http.StatusForbidden)
@@ -28,6 +28,7 @@ func (m *Middleware) Authorize(next http.Handler) http.Handler {
 			Path   []string `json:"path"`
 			Token  string   `json:"token"`
 		}
+
 		input := struct {
 			Input Input `json:"input"`
 		}{

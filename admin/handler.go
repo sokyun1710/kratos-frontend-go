@@ -1,6 +1,9 @@
 package admin
 
 import (
+	"net/http"
+
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gorilla/mux"
 	"github.com/ory/kratos-client-go/client"
@@ -9,7 +12,6 @@ import (
 	"github.com/sawadashota/kratos-frontend-go/middleware"
 	"github.com/sawadashota/kratos-frontend-go/x"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
 
 var (
@@ -53,9 +55,18 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	sub.HandleFunc("/identities", h.RenderIdentities).Methods(http.MethodGet)
 }
 
+// type identity struct {
+// 	*models.Identity
+// }
+
+// // func (i identity) String()  {
+// // 	return fmt.Sprintf("Identity{ID:%v Traits:%v", i.ID, i.Traits)
+// // }
+
 func (h *Handler) RenderIdentities(w http.ResponseWriter, r *http.Request) {
 	params := admin.NewListIdentitiesParams().WithDefaults()
 	res, err := h.r.KratosClient().Admin.ListIdentities(params)
+	spew.Dump(res.GetPayload())
 
 	if err != nil {
 		h.r.Logger().Error(err)
@@ -68,6 +79,11 @@ func (h *Handler) RenderIdentities(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	// var str []string
+	// for i := range res.GetPayload() {
+
+	// }
 
 	htmlValues := struct {
 		LogoutURL string

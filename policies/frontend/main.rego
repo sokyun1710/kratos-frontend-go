@@ -6,6 +6,12 @@ default allow = false
 
 allow {
 	verify_token
+	token.payload.session.identity.traits.email == "binh@mail.com"
+}
+
+allow {
+	verify_token
+	input.path[_] != "identities"
 }
 
 # Ensure that the token was issued to the user supplying it.
