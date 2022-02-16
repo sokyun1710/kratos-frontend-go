@@ -7,6 +7,7 @@ import (
 	"github.com/sawadashota/kratos-frontend-go/admin"
 	"github.com/sawadashota/kratos-frontend-go/authentication"
 	"github.com/sawadashota/kratos-frontend-go/driver/configuration"
+	"github.com/sawadashota/kratos-frontend-go/err"
 	"github.com/sawadashota/kratos-frontend-go/internal/jwt"
 	"github.com/sawadashota/kratos-frontend-go/middleware"
 	"github.com/sawadashota/kratos-frontend-go/salary"
@@ -19,10 +20,12 @@ type Registry interface {
 	JWTParser() *jwt.Parser
 	Middleware() *middleware.Middleware
 	KratosClient() *client.OryKratos
+	KratosPublicClient() *client.OryKratos
 	AccountHandler() *account.Handler
 	AuthenticationHandler() *authentication.Handler
 	SalaryHandler() *salary.Handler
-	IdentitiesHandler() *admin.Handler
+	AdminHandler() *admin.Handler
+	ErrHandler() *err.Handler
 	RegisterRoutes(router *mux.Router)
 }
 

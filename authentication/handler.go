@@ -110,12 +110,13 @@ func (h *Handler) RenderSignUpForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	form := res.GetPayload().Methods["password"].Config
+
 	htmlValues := struct {
 		Form *models.RegistrationFlowMethodConfig
 	}{
 		Form: form,
 	}
-	
+
 	if err := signUpHTML.Render(w, &htmlValues); err != nil {
 		h.r.Logger().Errorf("fail to render HTML: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)

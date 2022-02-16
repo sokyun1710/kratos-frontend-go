@@ -1,17 +1,19 @@
 package driver
 
 import (
+	"net/url"
+
 	"github.com/gorilla/mux"
 	"github.com/ory/kratos-client-go/client"
 	"github.com/sawadashota/kratos-frontend-go/account"
 	"github.com/sawadashota/kratos-frontend-go/admin"
 	"github.com/sawadashota/kratos-frontend-go/authentication"
 	"github.com/sawadashota/kratos-frontend-go/driver/configuration"
+	"github.com/sawadashota/kratos-frontend-go/err"
 	"github.com/sawadashota/kratos-frontend-go/internal/jwt"
 	"github.com/sawadashota/kratos-frontend-go/middleware"
 	"github.com/sawadashota/kratos-frontend-go/salary"
 	"github.com/sirupsen/logrus"
-	"net/url"
 )
 
 var _ Registry = new(RegistryDefault)
@@ -25,10 +27,12 @@ type RegistryDefault struct {
 	jwtParser             *jwt.Parser
 	mw                    *middleware.Middleware
 	kratosClient          *client.OryKratos
+	kratosPublicClient    *client.OryKratos
 	authenticationHandler *authentication.Handler
 	accountHandler        *account.Handler
 	salaryHandler         *salary.Handler
-	identitiesHandler     *admin.Handler
+	adminHandler          *admin.Handler
+	errHandler            *err.Handler
 }
 
 func (r *RegistryDefault) JWTParser() *jwt.Parser {
@@ -59,18 +63,26 @@ func (r *RegistryDefault) SalaryHandler() *salary.Handler {
 	return r.salaryHandler
 }
 
-func (r *RegistryDefault) IdentitiesHandler() *admin.Handler {
-	if r.identitiesHandler == nil {
-		r.identitiesHandler = admin.New(r, r.c)
+func (r *RegistryDefault) AdminHandler() *admin.Handler {
+	if r.adminHandler == nil {
+		r.adminHandler = admin.New(r, r.c)
 	}
-	return r.identitiesHandler
+	return r.adminHandler
+}
+
+func (r *RegistryDefault) ErrHandler() *err.Handler {
+	if r.errHandler == nil {
+		r.errHandler = err.New(r, r.c)
+	}
+	return r.errHandler
 }
 
 func (r *RegistryDefault) RegisterRoutes(router *mux.Router) {
 	r.AuthenticationHandler().RegisterRoutes(router)
 	r.AccountHandler().RegisterRoutes(router)
 	r.SalaryHandler().RegisterRoutes(router)
-	r.IdentitiesHandler().RegisterRoutes(router)
+	r.AdminHandler().RegisterRoutes(router)
+	r.ErrHandler().RegisterRoutes(router)
 }
 
 func NewRegistryDefault(c configuration.Provider) *RegistryDefault {
@@ -117,4 +129,17 @@ func (r *RegistryDefault) KratosClient() *client.OryKratos {
 		r.kratosClient = cl
 	}
 	return r.kratosClient
+}
+
+func (r *RegistryDefault) KratosPublicClient() *client.OryKratos {
+	if r.kratosPublicClient == nil {
+		u, _ := url.Parse("http://kratos:4433/")
+		cl := client.NewHTTPClientWithConfig(nil, &client.TransportConfig{
+			Host:     u.Host,
+			BasePath: "/",
+			Schemes:  []string{u.Scheme},
+		})
+		r.kratosPublicClient = cl
+	}
+	return r.kratosPublicClient
 }

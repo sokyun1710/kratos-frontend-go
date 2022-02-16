@@ -90,7 +90,7 @@ func (m *Middleware) Authorize(next http.Handler) http.Handler {
 		if !rb.Result.Allow {
 			m.r.Logger().Error(err)
 			fmt.Println("unauthorized")
-			w.WriteHeader(http.StatusUnauthorized)
+			w.WriteHeader(http.StatusForbidden)
 			return
 		}
 
