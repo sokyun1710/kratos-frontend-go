@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
@@ -23,6 +24,21 @@ jobs:
           packr2
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -o app .
           packr2 clean
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: app
+          path: ./app
+
+  push:
+    name: Push to Dockerhub
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          name: app
 
       - name: Docker Login
         uses: docker/login-action@v1.14.1
