@@ -1,2 +1,2 @@
 FROM alpine:latest
-COPY $HOME/artifacts/app /app
+COPY /home/artifacts/app /app
