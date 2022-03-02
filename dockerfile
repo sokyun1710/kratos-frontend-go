@@ -1,2 +1,2 @@
 FROM alpine:latest
-COPY /tmp/app /app
+COPY ./app /app
