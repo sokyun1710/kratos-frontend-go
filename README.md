@@ -1,3 +1,5 @@
+![Build](https://github.com/sokyun1710/kratos-frontend-go/actions/workflows/build-push.yml/badge.svg)
+
 Kratos Frontend Go Sample
 ===
 
