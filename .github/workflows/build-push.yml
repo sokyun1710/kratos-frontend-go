@@ -16,7 +16,7 @@ jobs:
         go-version: 1.17
 
     - name: Install dependencies
-      run: go install github.com/gobuffalo/packr/v2/packr2
+      run: go install github.com/gobuffalo/packr/v2/packr2@latest
       
     - name: Build
       run: |
