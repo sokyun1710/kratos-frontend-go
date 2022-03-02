@@ -1,6 +1,9 @@
 package admin
 
 import (
+	"bytes"
+	"crypto/tls"
+	"encoding/json"
 	"net/http"
 	"strings"
 
@@ -130,6 +133,21 @@ func (h *Handler) RenderCreateId(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		http.Redirect(w, r, "/create-id", 302)
+
+		customTransport := http.DefaultTransport.(*http.Transport).Clone()
+		customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		client := &http.Client{Transport: customTransport}
+		
+		syncUrl := "https://35.220.141.83/user/sync"
+		ename := strings.Split(r.FormValue("email"), "@")[0]
+		values := map[string]string{"name": ename}
+		jsonValue, _ := json.Marshal(values)
+		_, err := client.Post(syncUrl, "application/json", bytes.NewBuffer(jsonValue))
+
+		if err != nil {
+			h.r.Logger().Errorf("Sync failed", err)
+		}
+
+		http.Redirect(w, r, "/create-id", http.StatusFound)
 	}
 }

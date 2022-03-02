@@ -6,9 +6,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/sawadashota/kratos-frontend-go/internal/jwt"
 	"net/http"
 	"strings"
+
+	"github.com/sawadashota/kratos-frontend-go/internal/jwt"
 )
 
 func (m *Middleware) Authorize(next http.Handler) http.Handler {
@@ -122,7 +123,6 @@ func SetClaimsToContext(r *http.Request, claims *jwt.Claims) *http.Request {
 
 func GetClaimsFromContext(r *http.Request) (*jwt.Claims, error) {
 	claims, ok := r.Context().Value(contextClaimsKey).(*jwt.Claims)
-
 	if !ok {
 		return nil, errors.New("request context doesn't have claims")
 	}

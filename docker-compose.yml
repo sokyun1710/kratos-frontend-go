@@ -102,8 +102,6 @@ services:
       - intranet
 
 networks:
-  intranet:
-
-    null
+  intranet: null
 volumes:
   kratos-sqlite: null
